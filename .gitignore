@@ -1,0 +1,22 @@
+# Ignorar dependencias
+node_modules/
+
+# Ignorar archivos de entorno y secretos
+.env
+.venv/
+*.pem
+
+# Ignorar archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs
+*.log
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
