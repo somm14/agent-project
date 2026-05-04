@@ -214,13 +214,6 @@ agent-project/
 │   ├── Doc1_Fundamentos_Nutricion_Deportiva.pdf
 │   ├── Doc2_Planificacion_Entrenamiento.pdf
 │   └── Doc3_Recuperacion_Suplementacion.pdf
-├── chroma_db/                     # Base vectorial (generada al ejecutar el notebook)
-|   ├── chroma.sqlite3                 # Metadatos, textos e índice de colecciones
-│   └── [uuid]/                        # Índice HNSW para búsqueda vectorial eficiente
-│       ├── header.bin
-│       ├── data_level0.bin
-│       ├── length.bin
-│       └── link_list.bin
 ├── 01_desarrollo_asistente.ipynb  # Notebook principal
 ├── app.py                         # Interfaz Streamlit (bonus)
 ├── pyproject.toml                 # Dependencias gestionadas con uv
