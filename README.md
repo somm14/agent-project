@@ -1,6 +1,7 @@
 # 🏋️ Asistente Experto en Nutrición y Entrenamiento Deportivo
 
 > Proyecto Modular - IA Generativa | Máster en Data e IA  
+> *Elaborado por Soraya Malpica*  
 > Stack: Google Gemini · ChromaDB · LangGraph · LangChain · Streamlit
 
 ---
@@ -36,13 +37,15 @@ LangGraph Agent (StateGraph)
   │
   ├── Nodo: retrieve
   │     └── ChromaDB similarity search (top-4 chunks)
-  │           └── Gemini text-embedding-004
+  │           └── Gemini text-embedding-001
   │
   └── Nodo: generate
-        └── Gemini 1.5 Flash
-              ├── System Prompt (NutriCoach)
-              ├── Contexto RAG (chunks recuperados)
-              └── Historial de conversación (memoria)
+        └── Rotación de modelos Gemini (free tier)
+              ├── gemini-2.5-flash      (prioritario, 20 RPD)
+              └── gemini-2.5-flash-lite (fallback, 1.000 RPD)
+                    ├── System Prompt (agente experto)
+                    ├── Contexto RAG (chunks recuperados)
+                    └── Historial de conversación (memoria)
 ```
 
 **Flujo de datos:** `START → retrieve → generate → END`
@@ -53,7 +56,7 @@ LangGraph Agent (StateGraph)
 
 ### Requisitos previos
 
-- Python 3.10+
+- Python 3.12+
 - API Key de Google Gemini ([obtener aquí](https://aistudio.google.com/app/apikey))
 - `uv` instalado ([instrucciones](https://docs.astral.sh/uv/getting-started/installation/)) - recomendado
 
@@ -61,7 +64,7 @@ LangGraph Agent (StateGraph)
 
 ```bash
 git clone https://github.com/somm14/agent-project
-cd nutricoach-rag
+cd 01_desarrollo_asistente.ipynb
 ```
 
 ### 2. Instalar dependencias
@@ -86,7 +89,7 @@ Crea un archivo `.env` en la raíz del proyecto:
 
 ```bash
 # .env
-GOOGLE_API_KEY=tu_clave_de_gemini_aqui
+GEMINI_API_KEY=tu_clave_de_gemini_aqui
 ```
 
 > ⚠️ **Nunca subas el archivo `.env` a GitHub.** Está incluido en `.gitignore`.
@@ -101,7 +104,7 @@ agent-project/
 │   ├── Doc1_Fundamentos_Nutricion_Deportiva.pdf
 │   ├── Doc2_Planificacion_Entrenamiento.pdf
 │   └── Doc3_Recuperacion_Suplementacion.pdf
-├── asistente_deportivo_rag.ipynb
+├── 01_desarrollo_asistente.ipynb
 ├── app.py
 ├── pyproject.toml
 ├── requirements.txt
@@ -119,14 +122,16 @@ uv run jupyter notebook asistente_deportivo_rag.ipynb
 ```bash
 # Linux / macOS
 source .venv/bin/activate
-jupyter notebook asistente_deportivo_rag.ipynb
+jupyter notebook 01_desarrollo_asistente.ipynb
 
 # Windows
 .venv\Scripts\activate
 jupyter notebook asistente_deportivo_rag.ipynb
 ```
 
-Ejecuta las celdas en orden. ChromaDB creará automáticamente la carpeta `chroma_db/` con la base vectorial indexada.
+Ejecuta las celdas en orden. ChromaDB creará automáticamente la carpeta `chroma_db/` con la base vectorial indexadala primera vez. En ejecuciones posteriores, la base ya está lista y no necesita regenerarse.
+
+> ⚠️ **Nota sobre los límites del free tier:** Los contadores de solicitudes se reinician al reiniciar el kernel. Si alcanzas el límite diario real (20 req para `gemini-2.5-flash`), el agente rotará automáticamente a `gemini-2.5-flash-lite`. Si se agotan ambos, mostrará un mensaje indicando cuándo se restablece el límite (medianoche hora del Pacífico).
 
 ### 6. (Opcional) Ejecutar la interfaz Streamlit
 
@@ -153,6 +158,7 @@ Tu base de conocimiento incluye información detallada sobre macronutrientes, pe
 
 | Decisión | Justificación técnica |
 |----------|----------------------|
+| **Rol de entrenador experto** | Define un perfil de autoridad en el dominio sin ser médico, equilibrando credibilidad con responsabilidad |
 | **Sección "CÓMO RESPONDER"** | Instrucciones explícitas sobre cómo usar el contexto RAG reducen las alucinaciones y mejoran la precisión de recuperación |
 | **"Prioriza el contexto recuperado"** | Instrucción crítica para RAG: sin ella, el modelo tiende a ignorar el contexto y responder desde su conocimiento paramétrico |
 | **Admite incertidumbre explícita** | Siguiendo el principio de honestidad: es preferible decir "no tengo esa información" a inventar datos numéricos de salud |
@@ -167,25 +173,36 @@ Tu base de conocimiento incluye información detallada sobre macronutrientes, pe
 
 ### Chunking
 - **Tamaño:** 800 caracteres con overlap de 100
-- **Justificación:** Los documentos tienen tablas y párrafos densos; chunks pequeños (< 400 chars) partirían las tablas perdiendo contexto; chunks grandes (> 1200 chars) reducen la precisión del retrieval
+- **Separadores:** `['\n\n', '\n', '. ', ' ', '']` — prioriza separación semántica por párrafos
+- **Resultado real:** 77 chunks con tamaño medio de 626 caracteres
+- **Justificación:** Los documentos tienen tablas y párrafos densos; chunks 
+pequeños (< 400 chars) partirían las tablas perdiendo contexto; chunks grandes (> 1200 chars) reducen la precisión del retrieval
 
 ### Embeddings
 - **Modelo:** `gemini-embedding-001` (Google)
-- **Dimensiones:** 3,072
-- **Justificación:** Modelo de incrustación de texto de alto rendimiento de Google (lanzado en octubre de 2025) que ofrece soporte multilingüe avanzado para búsqueda, recuperación y clasificación semántica
+- **Justificación:** Modelo de embeddings de última generación de Google con soporte multilingüe avanzado, optimizado para búsqueda semántica y recuperación de información en español.
 
 ### Retrieval
 - **Top-k:** 4 chunks por consulta
 - **Tipo:** Similarity search (cosine distance)
-- **Justificación:** 4 chunks ofrecen suficiente contexto sin superar el límite de tokens del prompt; más chunks aumentan el ruido
+- **Almacenamiento:** ChromaDB persistente en `./chroma_db/`
+- **Justificación:** 4 chunks ofrecen suficiente contexto sin superar el límite de tokens del prompt; más chunks aumentan el ruido en la respuesta.
 
-### LLM
-- **Modelo:** `gemini-1.5-flash`
-- **Justificación:** Equilibrio óptimo entre velocidad, coste y calidad; gemini-1.5-pro sería excesivo para este caso de uso
+### LLM y Rotación de Modelos (Free Tier)
+
+El agente implementa rotación automática de modelos para gestionar los límites del free tier de Gemini. Cuando un modelo alcanza su cuota diaria real (detectada mediante el error `429 RESOURCE_EXHAUSTED` de la API), rota automáticamente al siguiente sin interrumpir la conversación:
+
+| Prioridad | Modelo | RPD free tier | Rol |
+|-----------|--------|--------------|-----|
+| 1º | `gemini-2.5-flash` | 20 req/día | Prioritario - mayor calidad de respuesta |
+| 2º | `gemini-2.5-flash-lite` | 1.000 req/día | Fallback - mayor disponibilidad |
+
+Si ambos modelos se agotan, el agente devuelve un mensaje informativo al usuario indicando el tiempo restante hasta el reset (medianoche, hora del Pacífico). Los contadores internos del notebook no persisten entre reinicios del kernel; la cuota real la gestiona Google en su backend.
 
 ### Memoria
 - **Mecanismo:** `add_messages` reducer de LangGraph en el estado del grafo
 - **Justificación:** El estado del grafo persiste entre invocaciones; `add_messages` aplica un reducer que concatena mensajes en lugar de sobreescribirlos
+- **Decisión clave:** En el historial se guarda la pregunta limpia del usuario (sin el bloque de contexto RAG), para no inflar el contexto en turnos sucesivos y mantener la ventana de tokens bajo control
 
 ---
 
@@ -198,7 +215,13 @@ agent-project/
 │   ├── Doc2_Planificacion_Entrenamiento.pdf
 │   └── Doc3_Recuperacion_Suplementacion.pdf
 ├── chroma_db/                     # Base vectorial (generada al ejecutar el notebook)
-├── asistente_deportivo_rag.ipynb  # Notebook principal
+|   ├── chroma.sqlite3                 # Metadatos, textos e índice de colecciones
+│   └── [uuid]/                        # Índice HNSW para búsqueda vectorial eficiente
+│       ├── header.bin
+│       ├── data_level0.bin
+│       ├── length.bin
+│       └── link_list.bin
+├── 01_desarrollo_asistente.ipynb  # Notebook principal
 ├── app.py                         # Interfaz Streamlit (bonus)
 ├── pyproject.toml                 # Dependencias gestionadas con uv
 ├── requirements.txt               # Exportado desde pyproject.toml (compatibilidad pip)
