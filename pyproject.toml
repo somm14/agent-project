@@ -14,4 +14,5 @@ dependencies = [
     "langchain-text-splitters>=1.1.2",
     "langgraph>=1.1.10",
     "pypdf>=6.10.2",
+    "streamlit>=1.57.0",
 ]
