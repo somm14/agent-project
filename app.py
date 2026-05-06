@@ -22,7 +22,9 @@ load_dotenv()
 API_KEY = os.getenv('GEMINI_API_KEY') or st.secrets.get('GEMINI_API_KEY', '')
 
 MODEL_EMBEDDING = 'gemini-embedding-001'
-CHROMA_DIR      = './chroma_db'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CHROMA_DIR = os.path.join(BASE_DIR, "chroma_db")
+# CHROMA_DIR      = './chroma_db'
 COLLECTION_NAME = 'nutricion_deportiva'
 
 # 2. Rotación de modelos (free tier)
@@ -102,10 +104,17 @@ def init_rag_system():
     )
     return retriever
 
+retriever = init_rag_system()
+# Test
+test = retriever.invoke("proteína deportista fuerza")
+if not test:
+    st.error("⚠️ ChromaDB no devuelve resultados. Verifica que chroma_db/ está correctamente subida al repo.")
+    st.stop()
+
+
 # 6. Grafo LangGraph
 nl='\n'
 def retrieve_node(state: AgentState) -> dict:
-    retriever = init_rag_system()
     docs = retriever.invoke(state['question'])
     context_parts = [
         f'[{d.metadata.get('source', '?')} | pág.{d.metadata.get('page', '?')}]{nl}{d.page_content}'
