@@ -400,8 +400,7 @@ if not st.session_state.display_messages:
     st.info(
         '👋 **¡Bienvenido a tu Asistente deportivo!**  \n'
         'Pregúntame sobre nutrición deportiva, planificación del entrenamiento, '
-        'suplementación, recuperación, psicología del rendimiento o cualquier tema '
-        'relacionado con el rendimiento físico.'
+        'suplementación y recuperación deportiva o cualquier tema relacionado con el rendimiento físico.'
     )
 
 # Historial de mensajes
