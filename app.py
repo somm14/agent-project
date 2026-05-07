@@ -277,12 +277,12 @@ with st.sidebar:
 
     if is_fallback:
         st.markdown(
-            f'<div class='model-badge-fallback'>⚡ {active} &nbsp;·&nbsp; fallback</div>',
+            f'<div class="model-badge-fallback">⚡ {active} &nbsp;·&nbsp; fallback</div>',
             unsafe_allow_html=True,
         )
     else:
         st.markdown(
-            f'<div class='model-badge-primary'>✦ {active} &nbsp;·&nbsp; primario</div>',
+            f'<div class="model-badge-primary">✦ {active} &nbsp;·&nbsp; primario</div>',
             unsafe_allow_html=True,
         )
 
@@ -316,17 +316,17 @@ with st.sidebar:
     c1, c2 = st.columns(2)
     with c1:
         st.markdown(
-            f'<div class='stat-card'>'
-            f'<div class='stat-number'>{turns}</div>'
-            f'<div class='stat-label'>Turnos</div>'
+            f'<div class="stat-card">'
+            f'<div class="stat-number">{turns}</div>'
+            f'<div class="stat-label">Turnos</div>'
             f'</div>',
             unsafe_allow_html=True,
         )
     with c2:
         st.markdown(
-            f'<div class='stat-card'>'
-            f'<div class='stat-number'>{msgs}</div>'
-            f'<div class='stat-label'>Mensajes</div>'
+            f'<div class="stat-card">'
+            f'<div class="stat-number">{msgs}</div>'
+            f'<div class="stat-label">Mensajes</div>'
             f'</div>',
             unsafe_allow_html=True,
         )
