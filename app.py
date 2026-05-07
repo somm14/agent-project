@@ -337,7 +337,7 @@ with st.sidebar:
         st.rerun()
 
         #  Stack técnico 
-    with st.expander('🛠️ Stack tecnológico'):
+    with st.expander('Stack tecnológico'):
         st.markdown('''
 - 🤖 Google Gemini (LLM + Embeddings)
 - 🗄️ ChromaDB (Vector Store)
@@ -346,7 +346,7 @@ with st.sidebar:
 ''')
 
     # Historial RAW
-    with st.expander('🔍 Historial raw (JSON)'):
+    with st.expander('Historial raw (JSON)'):
         st.json(st.session_state.get('display_messages', []))
                 
 # 10. CUERPO PRINCIPAL
@@ -392,13 +392,13 @@ if st.session_state.get('model_rotated'):
         unsafe_allow_html=True,
     )
 # System prompt box
-with st.expander('🎭 Ver System Prompt activo', expanded=False):
+with st.expander('Ver System Prompt activo', expanded=False):
     st.code(SYSTEM_PROMPT.strip(), language='markdown')
 
 # Mensaje de bienvenida 
 if not st.session_state.display_messages:
     st.info(
-        '👋 **¡Bienvenido a tu Asistente deportivo!**  \n'
+        '**¡Bienvenido/a a tu Asistente deportivo!**  \n'
         'Pregúntame sobre nutrición deportiva, planificación del entrenamiento, '
         'suplementación y recuperación deportiva o cualquier tema relacionado con el rendimiento físico.'
     )
@@ -460,7 +460,7 @@ if prompt := st.chat_input('Pregunta sobre nutrición, entrenamiento, suplementa
 # 11. SECCIÓN EDUCATIVA
 # ──────────────────────
 
-with st.expander('📖 ¿Cómo funciona el sistema RAG? - Concepto clave'):
+with st.expander('¿Cómo funciona el sistema RAG? - Concepto clave'):
     st.markdown('''
     ### Arquitectura del Asistente
 
