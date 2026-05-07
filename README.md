@@ -2,9 +2,7 @@
 
 > Proyecto Modular - IA Generativa | Máster en Data e IA  
 > *Elaborado por Soraya Malpica*  
-> Stack: Google Gemini · ChromaDB · LangGraph · LangChain · Streamlit
-
-![Static Badge](https://img.shields.io/badge/python)
+> Stack: Google Gemini · ChromaDB · LangGraph · LangChain · Streamlit · VSC · Python
 
 ---
 
@@ -16,12 +14,12 @@ El agente está especializado en **nutrición deportiva y planificación del ent
 - Tiene preguntas con respuestas claramente recuperables de los documentos y preguntas abiertas que requieren síntesis
 - Es un dominio con alta variabilidad de perfiles de usuario (principiantes, intermedios, élite) que permite demostrar la adaptabilidad del agente
 
-### Base de Conocimiento (3 documentos, 29 páginas)
+### Base de Conocimiento (3 documentos, 24 páginas)
 
 | Archivo | Páginas | Temas principales |
 |---------|---------|-------------------|
-| `Doc1_Fundamentos_Nutricion_Deportiva.pdf` | 10 | Balance energético, macronutrientes, micronutrientes, hidratación, nutrición perioperativa |
-| `Doc2_Planificacion_Entrenamiento.pdf` | 9 | Principios del entrenamiento, periodización (lineal, DUP, bloques), fuerza, resistencia, composición corporal |
+| `Doc1_Fundamentos_Nutricion_Deportiva.pdf` | 9 | Balance energético, macronutrientes, micronutrientes, hidratación, nutrición perioperativa |
+| `Doc2_Planificacion_Entrenamiento.pdf` | 6 | Principios del entrenamiento, periodización (lineal, DUP, bloques), fuerza, resistencia, composición corporal |
 | `Doc3_Recuperacion_Suplementacion.pdf` | 10 | Recuperación, sueño, suplementos (creatina, cafeína, beta-alanina), planes dietéticos, casos prácticos, lesiones |
 
 ---
@@ -44,7 +42,7 @@ LangGraph Agent (StateGraph)
   └── Nodo: generate
         └── Rotación de modelos Gemini (free tier)
               ├── gemini-2.5-flash      (prioritario, 20 RPD)
-              └── gemini-2.5-flash-lite (fallback, 1.000 RPD)
+              └── gemini-2.5-flash-lite (fallback, 20 RPD)
                     ├── System Prompt (agente experto)
                     ├── Contexto RAG (chunks recuperados)
                     └── Historial de conversación (memoria)
@@ -131,19 +129,9 @@ jupyter notebook 01_desarrollo_asistente.ipynb
 jupyter notebook asistente_deportivo_rag.ipynb
 ```
 
-Ejecuta las celdas en orden. ChromaDB creará automáticamente la carpeta `chroma_db/` con la base vectorial indexadala primera vez. En ejecuciones posteriores, la base ya está lista y no necesita regenerarse.
+Ejecuta las celdas en orden. ChromaDB creará automáticamente la carpeta `chroma_db/` con la base vectorial indexada la primera vez. En ejecuciones posteriores, la base ya está lista y no necesita regenerarse.
 
-> ⚠️ **Nota sobre los límites del free tier:** Los contadores de solicitudes se reinician al reiniciar el kernel. Si alcanzas el límite diario real (20 req para `gemini-2.5-flash`), el agente rotará automáticamente a `gemini-2.5-flash-lite`. Si se agotan ambos, mostrará un mensaje indicando cuándo se restablece el límite (medianoche hora del Pacífico).
-
-### 6. (Opcional) Ejecutar la interfaz Streamlit
-
-```bash
-# Con uv:
-uv run streamlit run app.py
-
-# Con entorno activado:
-streamlit run app.py
-```
+> ⚠️ **Nota sobre los límites del free tier:** Si alcanzas el límite diario real (20 req para `gemini-2.5-flash`), el agente rotará automáticamente a `gemini-2.5-flash-lite`. Si se agotan ambos, mostrará un mensaje indicando cuándo se restablece el límite (medianoche hora del Pacífico).
 
 ---
 
@@ -173,12 +161,15 @@ Tu base de conocimiento incluye información detallada sobre macronutrientes, pe
 
 ## **Decisiones Técnicas**
 
+### Extractor de PDF
+
+Se usa **`pypdf`** para la extracción de texto. Los documentos han sido generados sin tablas, de modo que la extracción directa de texto es limpia y produce chunks de alta calidad sin artefactos de formato.
+
 ### Chunking
 - **Tamaño:** 800 caracteres con overlap de 100
-- **Separadores:** `['\n\n', '\n', '. ', ' ', '']` — prioriza separación semántica por párrafos
-- **Resultado real:** 77 chunks con tamaño medio de 626 caracteres
-- **Justificación:** Los documentos tienen tablas y párrafos densos; chunks 
-pequeños (< 400 chars) partirían las tablas perdiendo contexto; chunks grandes (> 1200 chars) reducen la precisión del retrieval
+- **Separadores:** `['\n\n', '\n', '. ', ' ', '']` - prioriza separación semántica por párrafos
+- **Resultado real:** 78 chunks con tamaño medio de 648 caracteres
+
 
 ### Embeddings
 - **Modelo:** `gemini-embedding-001` (Google)
