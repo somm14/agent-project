@@ -4,6 +4,10 @@
 > *Elaborado por Soraya Malpica*  
 > Stack: Google Gemini · ChromaDB · LangGraph · LangChain · Streamlit
 
+![React](https://shields.io)
+![NodeJS](https://shields.io)
+![Docker](https://shields.io)
+
 ---
 
 ## **Descripción del Dominio**
