@@ -294,9 +294,6 @@ with st.sidebar:
 - 📄 Fundamentos de Nutrición Deportiva
 - 📄 Planificación del Entrenamiento
 - 📄 Recuperación y Suplementación
-- 📄 Psicología del Rendimiento
-- 📄 Cronobiología y Dietas Especiales
-- 📄 Entrenamiento Funcional y Movilidad
 ''')
     
     # Métricas de uso
@@ -354,7 +351,7 @@ with st.sidebar:
                 
 # 10. CUERPO PRINCIPAL
 # ──────────────────────
-st.title('🏋️ NutriCoach IA')
+st.title('🏋️ Asistente Deportivo Personal')
 st.caption(
     'Asistente experto en nutrición y entrenamiento deportivo · '
     'Powered by Google Gemini + RAG (ChromaDB) + LangGraph'
@@ -464,7 +461,7 @@ if prompt := st.chat_input('Pregunta sobre nutrición, entrenamiento, suplementa
 # 11. SECCIÓN EDUCATIVA
 # ──────────────────────
 
-with st.expander('📖 ¿Cómo funciona el sistema RAG? — Concepto clave'):
+with st.expander('📖 ¿Cómo funciona el sistema RAG? - Concepto clave'):
     st.markdown('''
     ### Arquitectura del Asistente
 
