@@ -350,7 +350,7 @@ with st.sidebar:
 
     # Historial RAW
     with st.expander('🔍 Historial raw (JSON)'):
-        st.json(st.session_state.get('display_messages', [])
+        st.json(st.session_state.get('display_messages', []))
                 
 # 10. CUERPO PRINCIPAL
 # ──────────────────────
@@ -386,11 +386,11 @@ if 'display_messages' not in st.session_state:
 # Banner de rotación de modelo
 if st.session_state.get('model_rotated'):
     st.markdown(
-        '<div class='rotation-banner'>'
+        '<div class="rotation-banner">'
         '⚠️ <strong>Modelo cambiado automáticamente</strong> · '
         f'<code>gemini-2.5-flash</code> ha alcanzado su límite diario. '
         f'Usando <code>gemini-2.5-flash-lite</code> como fallback. '
-        f'El límite se restablece en <strong>{_tiempo_reset()}</strong> (hora del Pacífico).'
+        f'El límite se restablece en <strong>{tiempo_reset()}</strong> (hora del Pacífico).'
         '</div>',
         unsafe_allow_html=True,
     )
