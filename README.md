@@ -169,7 +169,10 @@ Se usa **`pypdf`** para la extracción de texto. Los documentos han sido generad
 - **Tamaño:** 800 caracteres con overlap de 100
 - **Separadores:** `['\n\n', '\n', '. ', ' ', '']` - prioriza separación semántica por párrafos
 - **Resultado real:** 78 chunks con tamaño medio de 648 caracteres
+- **Justificación**: Permite guardar párrafos nteros sin cortar explicaciones a la mitad. Además, el resultado confirma que los temas se almacenan juntos y con sentido lógico. Y, sumando la eficiencia de **ChromaDB**, con esos 78 chunks facilita una búsqueda rápida, precisa y ligera en la base de datos vectorial.
 
+### Prioridad al contexto RAG
+Los beneficios de usar **RAG (Generación Aumentada por Recuperación)** hace que el asistente evite alucionaciones respondiendo únicamente en base a los tres documentos proporcionados garantizando datos precisos. Además, reduce el consumo de tokens al enviar solos los chunks relevantes en lugar de las 24 páginas completas.
 
 ### Embeddings
 - **Modelo:** `gemini-embedding-001` (Google)
@@ -188,7 +191,7 @@ El agente implementa rotación automática de modelos para gestionar los límite
 | Prioridad | Modelo | RPD free tier | Rol |
 |-----------|--------|--------------|-----|
 | 1º | `gemini-2.5-flash` | 20 req/día | Prioritario - mayor calidad de respuesta |
-| 2º | `gemini-2.5-flash-lite` | 1.000 req/día | Fallback - mayor disponibilidad |
+| 2º | `gemini-2.5-flash-lite` | 20 req/día | Fallback |
 
 Si ambos modelos se agotan, el agente devuelve un mensaje informativo al usuario indicando el tiempo restante hasta el reset (medianoche, hora del Pacífico). Los contadores internos del notebook no persisten entre reinicios del kernel; la cuota real la gestiona Google en su backend.
 
@@ -199,20 +202,20 @@ Si ambos modelos se agotan, el agente devuelve un mensaje informativo al usuario
 
 ---
 
-## **Estructura del Proyecto** (MODIFICAR)
+## **Estructura del Proyecto**
 
 ```
 agent-project/
-├── docs/                          # PDFs de la base de conocimiento
+├── .devcontainer/                                # Folder creado por Streamlit Cloud
+├── docs/                                         # PDFs de la base de conocimiento
 │   ├── Doc1_Fundamentos_Nutricion_Deportiva.pdf
 │   ├── Doc2_Planificacion_Entrenamiento.pdf
 │   └── Doc3_Recuperacion_Suplementacion.pdf
-├── 01_desarrollo_asistente.ipynb  # Notebook principal
-├── app.py                         # Interfaz Streamlit (bonus)
-├── pyproject.toml                 # Dependencias gestionadas con uv
-├── requirements.txt               # Exportado desde pyproject.toml (compatibilidad pip)
-├── .env                           # API keys (NO subir a git)
-├── .gitignore
+├── chroma_db/                                    # Base vectorial (generada automáticamente)
+├── 01_desarrollo_asistente.ipynb                 # Notebook principal
+├── app.py                                        # Interfaz Streamlit
+├── pyproject.toml                                # Dependencias gestionadas con uv
+├── requirements.txt                              # Exportado desde pyproject.toml (compatibilidad pip)
 └── README.md
 ```
 
@@ -238,6 +241,7 @@ dependencies = [
     "langchain-text-splitters>=1.1.2",
     "langgraph>=1.1.10",
     "pypdf>=6.10.2",
+    "streamlit>=1.57.0"
 ]
 ```
 
@@ -250,16 +254,8 @@ uv export --format requirements-txt > requirements.txt
 
 ## 🌐 Despliegue en Streamlit Cloud
 
-1. Sube el repositorio a GitHub (sin el `.env` y sin `chroma_db/`)
-2. Ve a [share.streamlit.io](https://share.streamlit.io)
-3. Conecta tu cuenta de GitHub y selecciona el repositorio
-4. En **Advanced settings → Secrets**, añade:
-   ```toml
-   GOOGLE_API_KEY = "tu_clave_aqui"
-   ```
-5. El archivo principal es `app.py`
+https://sport-assistant-somm14.streamlit.app/
 
-> **Nota:** La carpeta `chroma_db/` debe estar disponible en el despliegue. Para Streamlit Cloud, se recomienda ejecutar el proceso de indexación como parte del `init` de la app (usando `@st.cache_resource`).
 
 ---
 
