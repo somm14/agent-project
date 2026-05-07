@@ -446,8 +446,8 @@ if prompt := st.chat_input('Pregunta sobre nutrición, entrenamiento, suplementa
         badge_cls = 'model-badge-fallback' if is_fb else 'model-badge-primary'
         icon      = '⚡' if is_fb else '✦'
         st.markdown(
-            f'<div style='margin-top:6px'>'
-            f'<span class='{badge_cls}'>{icon} {model_used}</span>'
+            f'<div style="margin-top:6px">'
+            f'<span class="{badge_cls}">{icon} {model_used}</span>'
             f'</div>',
             unsafe_allow_html=True,
         )
