@@ -297,7 +297,7 @@ with st.sidebar:
 ''')
     
     # Métricas de uso
-    st.subheader('📊 Uso de modelos (sesión)')
+    st.subheader('Uso de modelos (sesión)')
     for model in MODELS:
         used = st.session_state.usage[model['name']]['requests_today']
         rpd  = model['rpd']
