@@ -417,8 +417,8 @@ for message in st.session_state.display_messages:
             badge_cls = 'model-badge-fallback' if is_fb else 'model-badge-primary'
             icon      = '⚡' if is_fb else '✦'
             st.markdown(
-                f'<div style='margin-top:6px'>'
-                f'<span class='{badge_cls}'>{icon} {message['model']}</span>'
+                f'<div style="margin-top:6px">'
+                f'<span class="{badge_cls}">{icon} {message["model"]}</span>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
