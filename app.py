@@ -299,7 +299,7 @@ with st.sidebar:
     # Métricas de uso
     st.subheader('Uso de modelos (sesión)')
     for model in MODELS:
-        used = st.session_state.usage[model['name']]['requests_today']
+        used = st.session_state.usage[model['name']]['requests_today'] + 1
         rpd  = model['rpd']
         pct  = min(used / rpd, 1.0)
         color = 'normal' if pct < 0.7 else ('off' if pct >= 1.0 else 'normal')
