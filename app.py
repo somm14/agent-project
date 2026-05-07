@@ -490,6 +490,6 @@ with st.expander('¿Cómo funciona el sistema RAG? - Concepto clave'):
     anclan en los documentos de la base de conocimiento, reduciendo las alucinaciones.
 
     **Rotación de modelos:** Cuando `gemini-2.5-flash` (20 RPD en free tier) agota su cuota
-    diaria, el agente rota automáticamente a `gemini-2.5-flash-lite` (1.000 RPD) sin
+    diaria, el agente rota automáticamente a `gemini-2.5-flash-lite` (20 RPD) sin
     interrumpir la conversación. Un banner en la UI notifica el cambio.
     ''')
