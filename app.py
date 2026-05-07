@@ -289,7 +289,7 @@ with st.sidebar:
     st.divider()
 
     # Info base de conocimiento
-    st.subheader('📚 Base de conocimiento')
+    st.subheader('Base de conocimiento')
     st.markdown('''
 - 📄 Fundamentos de Nutrición Deportiva
 - 📄 Planificación del Entrenamiento
